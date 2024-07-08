@@ -1,5 +1,8 @@
 name: ci-golang-workflows # nome do workflow
-on: [push] # quando rodar o push
+on:
+  pull_request:
+    branches:
+      - develop
 jobs:
   check-application:
     runs-on: ubuntu-latest
