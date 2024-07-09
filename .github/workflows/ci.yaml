@@ -2,19 +2,28 @@ name: ci-golang-workflows # nome do workflow
 on:
   pull_request:
     branches:
-      - develop
+      - develop # O workflow será acionado quando houver um pull request para o branch 'develop'
 
 jobs:
   check-application:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go: ["1.14", "1.15"]
+    runs-on: ubuntu-latest # O job será executado em uma máquina virtual com o Ubuntu mais recente
     steps:
-      - uses: actions/checkout@v3 # pega os dados que eu subi e baixa na máquina
-      - uses: actions/setup-go@v2
+      - uses: actions/checkout@v3 # Ação para fazer o checkout do repositório, baixando os dados do repositório para a máquina virtual
+      - uses: actions/setup-go@v2 # Ação para configurar o ambiente Go
         with:
-          go-version: ${{ matrix.go }}
+          go-version: 1.15 # Especifica a versão do Go a ser utilizada (1.15)
+      - run: go test # Executa os testes do Go
+      - run: go run math.go # Executa o arquivo math.go
+      ## buildando imagem
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3 # Configura o QEMU para emulação multiplataforma
 
-      - run: go test
-      - run: go run math.go
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3 # Configura o Docker Buildx para construção avançada de imagens
+
+      - name: Build and push
+        id: docker_build # Define um ID para esta ação para que seu resultado possa ser usado em etapas posteriores
+        uses: docker/build-push-action@v6 # Utiliza a ação para construir e (opcionalmente) enviar a imagem Docker
+        with:
+          push: false # Especifica que a imagem não deve ser enviada para um registro Docker
+          tags: DaniloNogueira-Silva/full-cycle-ci-go:latest # Define a tag para a imagem Docker construída
