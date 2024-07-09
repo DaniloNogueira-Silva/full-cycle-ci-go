@@ -32,4 +32,4 @@ jobs:
         uses: docker/build-push-action@v6 # Utiliza a ação para construir e (opcionalmente) enviar a imagem Docker
         with:
           push: true
-          tags: DaniloNogueira-Silva/full-cycle-ci-go:latest # Define a tag para a imagem Docker construída
+          tags: danilonogueira1802/full-cycle-ci-go:latest # Define a tag para a imagem Docker construída
